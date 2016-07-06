@@ -5,7 +5,7 @@ var AddButton = React.createClass({
 
 	render:function(){
 		return (
-			<div className="draggable-button" onClick={CommonActions.AddNote} >
+			<div className="draggable-button" onClick={CommonActions.addNote} >
 				+
 			</div>
 		)

@@ -19632,6 +19632,12 @@ var CommonActions = {
     actionType: AppConstants.ADD_NOTE, 
     data: data
     })
+	},
+	removeNote:function(data){
+		AppDispatcher.handleAction({
+			actionType:AppConstants.REMOVE_NOTE,
+			data:data
+		})
 	}
 }
 
@@ -19644,7 +19650,7 @@ var AddButton = React.createClass({displayName: "AddButton",
 
 	render:function(){
 		return (
-			React.createElement("div", {className: "draggable-button", onClick: CommonActions.AddNote}, 
+			React.createElement("div", {className: "draggable-button", onClick: CommonActions.addNote}, 
 				"+"
 			)
 		)
@@ -19678,23 +19684,35 @@ var AddButton = require('./AddButton')
 var StickyContainer = require('./StickyContainer')
 var StickyStore =  require('../stores/stickyStore')
 
-function getState(){
+function getStateData(){
 	return {
-		stickyNoteFlagCount : StickyStore.getFlag()
+		//stickyNoteFlagCount : StickyStore.getFlag(),
+    stickyComponent : StickyStore.getStickyComponent()
 	}
 }
 
 var StickyApp = React.createClass({displayName: "StickyApp",
 	getInitialState: function(){
-		return getState();
+		return getStateData()
 	},
+
+  componentWillMount: function(){
+    StickyStore.addChangeListener(this.onChange);
+  },
+  componentWillUnmount: function(){
+    StickyStore.removeChangeListener(this.onChange);
+  },
+  onChange: function(){ 
+    this.setState(getStateData());
+  },
+
 
   render: function() { 
     return (
     	React.createElement("div", {className: ""}, 
 	        React.createElement(Header, null), 
           React.createElement(AddButton, null), 
-          React.createElement(StickyContainer, {flagStat: this.state.stickyNoteFlagCount})
+          React.createElement(StickyContainer, {stickyComponent: this.state.stickyComponent})
       )
     )
   }
@@ -19706,18 +19724,11 @@ module.exports = StickyApp
 var React = require('react');
 var StickyNotes = require('./StickyNotes')
 
-var _stickyComponent;
-
 var StickyContainer = React.createClass({displayName: "StickyContainer",
 	render: function(){
-		if(this.props.flagStat === false)
-			_stickyComponent = null;
-		else{
-			_stickyComponent = React.createElement(StickyNotes, null)
-		}
 		return (
 			React.createElement("div", {className: "row sticky-container"}, 
-				_stickyComponent
+				this.props.stickyComponent
 			)
 		)
 	}
@@ -19727,6 +19738,7 @@ module.exports = StickyContainer
 
 },{"./StickyNotes":168,"react":162}],168:[function(require,module,exports){
 var React = require('react')
+var CommonActions = require('../actions/CommonActions')
 
 var StickyNotes = React.createClass({displayName: "StickyNotes",
 	render: function(){
@@ -19740,7 +19752,7 @@ var StickyNotes = React.createClass({displayName: "StickyNotes",
 							"Overview -" 
 						)
 					), 
-				React.createElement("div", {className: "clear-sticky-notes"}, 
+				React.createElement("div", {className: "clear-sticky-notes", onClick: CommonActions.removeNote.bind(this,{arrComp : this.props.arrComp, index: this.props.indexId})}, 
 					"x"
 				)
 			)
@@ -19749,9 +19761,10 @@ var StickyNotes = React.createClass({displayName: "StickyNotes",
 })
 
 module.exports = StickyNotes
-},{"react":162}],169:[function(require,module,exports){
+},{"../actions/CommonActions":163,"react":162}],169:[function(require,module,exports){
 var AppConstants = {
-	ADD_NOTE : "ADD_NOTE"
+	ADD_NOTE : "ADD_NOTE",
+	REMOVE_NOTE: "REMOVE_NOTE"
 }
 
 module.exports = AppConstants
@@ -19801,8 +19814,12 @@ var AppConstants=require('../constants/AppConstants')
 var objectAssign=require('react/lib/Object.assign')
 var EventEmitter=require('events').EventEmitter
 var CommonActions=require('../actions/CommonActions')
+var StickyNotes = require('../components/StickyNotes')
 
-var flag = false;
+//var flag = false;
+var stickyComponent = [];
+var CHANGE_EVENT = 'change';
+
 
 var stickyStore = objectAssign({},EventEmitter.prototype,{
 	emitChange:function() {
@@ -19816,10 +19833,29 @@ var stickyStore = objectAssign({},EventEmitter.prototype,{
 	removeChangeListener:function() {
 		this.removeListener(CHANGE_EVENT,cb)
 	},
-
+	/*setFlag: function(){
+		flag = true
+	},
 	getFlag:function(){
 		return flag
+	},*/
+	setStickyComponent:function(){
+			stickyComponent.push(React.createElement(StickyNotes, {arrComp: stickyComponent, indexId: stickyComponent.length}));
 	},
+	getStickyComponent:function(){
+		return stickyComponent;
+	},
+	removeStickyNote:function(data){
+		if(stickyComponent.length !== 0){
+			console.log(data.index);
+			stickyComponent.splice(data.index,1);
+			console.log(stickyComponent);	
+		}
+		else{
+			alert("Please Add a NOTE");
+		}
+		
+	}
 
 })
 
@@ -19827,6 +19863,16 @@ AppDispatcher.register(function(payload){
 	var action = payload.action
 
 	switch(action.actionType){
+		case AppConstants.ADD_NOTE:
+		//stickyStore.setFlag(action.data);
+		stickyStore.setStickyComponent(action.data);
+		stickyStore.emit(CHANGE_EVENT);
+		break;
+
+		case AppConstants.REMOVE_NOTE:
+		stickyStore.removeStickyNote(action.data);
+		stickyStore.emit(CHANGE_EVENT);
+		break;
 
 		default:
 			return true
@@ -19836,4 +19882,4 @@ AppDispatcher.register(function(payload){
 
 module.exports = stickyStore
 
-},{"../actions/CommonActions":163,"../constants/AppConstants":169,"../dispatchers/AppDispatcher":170,"events":1,"react":162,"react/lib/Object.assign":28}]},{},[171]);
+},{"../actions/CommonActions":163,"../components/StickyNotes":168,"../constants/AppConstants":169,"../dispatchers/AppDispatcher":170,"events":1,"react":162,"react/lib/Object.assign":28}]},{},[171]);

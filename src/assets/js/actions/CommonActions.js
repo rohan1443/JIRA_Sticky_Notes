@@ -7,6 +7,12 @@ var CommonActions = {
     actionType: AppConstants.ADD_NOTE, 
     data: data
     })
+	},
+	removeNote:function(data){
+		AppDispatcher.handleAction({
+			actionType:AppConstants.REMOVE_NOTE,
+			data:data
+		})
 	}
 }
 

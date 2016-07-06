@@ -4,23 +4,35 @@ var AddButton = require('./AddButton')
 var StickyContainer = require('./StickyContainer')
 var StickyStore =  require('../stores/stickyStore')
 
-function getState(){
+function getStateData(){
 	return {
-		stickyNoteFlagCount : StickyStore.getFlag()
+		//stickyNoteFlagCount : StickyStore.getFlag(),
+    stickyComponent : StickyStore.getStickyComponent()
 	}
 }
 
 var StickyApp = React.createClass({
 	getInitialState: function(){
-		return getState();
+		return getStateData()
 	},
+
+  componentWillMount: function(){
+    StickyStore.addChangeListener(this.onChange);
+  },
+  componentWillUnmount: function(){
+    StickyStore.removeChangeListener(this.onChange);
+  },
+  onChange: function(){ 
+    this.setState(getStateData());
+  },
+
 
   render: function() { 
     return (
     	<div className="">
 	        <Header />
           <AddButton />
-          <StickyContainer flagStat={this.state.stickyNoteFlagCount} />
+          <StickyContainer stickyComponent={this.state.stickyComponent}/>
       </div>
     )
   }

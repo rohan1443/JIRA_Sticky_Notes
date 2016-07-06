@@ -1,4 +1,5 @@
 var React = require('react')
+var CommonActions = require('../actions/CommonActions')
 
 var StickyNotes = React.createClass({
 	render: function(){
@@ -12,7 +13,7 @@ var StickyNotes = React.createClass({
 							Overview - 
 						</div>
 					</div>
-				<div className="clear-sticky-notes">
+				<div className="clear-sticky-notes" onClick = {CommonActions.removeNote.bind(this,{arrComp : this.props.arrComp, index: this.props.indexId})} >
 					x
 				</div>
 			</div>
