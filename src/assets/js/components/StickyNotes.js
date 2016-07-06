@@ -16,6 +16,9 @@ var StickyNotes = React.createClass({
 				<div className="clear-sticky-notes" onClick = {CommonActions.removeNote.bind(this,{arrComp : this.props.arrComp, index: this.props.indexId})} >
 					x
 				</div>
+				<div className="expand-sticky-notes" >
+					E
+				</div>
 			</div>
 		)
 	}

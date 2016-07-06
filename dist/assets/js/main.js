@@ -19642,7 +19642,7 @@ var CommonActions = {
 }
 
 module.exports = CommonActions;
-},{"../constants/AppConstants":169,"../dispatchers/AppDispatcher":170}],164:[function(require,module,exports){
+},{"../constants/AppConstants":170,"../dispatchers/AppDispatcher":171}],164:[function(require,module,exports){
 var React = require('react');
 var CommonActions = require('../actions/CommonActions')
 
@@ -19683,6 +19683,7 @@ var Header = require('./Header')
 var AddButton = require('./AddButton')
 var StickyContainer = require('./StickyContainer')
 var StickyStore =  require('../stores/stickyStore')
+var StickyExpand = require('./StickyExpand')
 
 function getStateData(){
 	return {
@@ -19720,7 +19721,7 @@ var StickyApp = React.createClass({displayName: "StickyApp",
 
 module.exports = StickyApp
 
-},{"../stores/stickyStore":172,"./AddButton":164,"./Header":165,"./StickyContainer":167,"react":162}],167:[function(require,module,exports){
+},{"../stores/stickyStore":173,"./AddButton":164,"./Header":165,"./StickyContainer":167,"./StickyExpand":168,"react":162}],167:[function(require,module,exports){
 var React = require('react');
 var StickyNotes = require('./StickyNotes')
 
@@ -19736,7 +19737,21 @@ var StickyContainer = React.createClass({displayName: "StickyContainer",
 
 module.exports = StickyContainer
 
-},{"./StickyNotes":168,"react":162}],168:[function(require,module,exports){
+},{"./StickyNotes":169,"react":162}],168:[function(require,module,exports){
+var React = require('react')
+var CommonActions = require('../actions/CommonActions')
+
+var StickyExpand = React.createClass({displayName: "StickyExpand",
+	render: function(){
+		return (
+			React.createElement("div", {className: "sticky-expand"}
+			)
+			)
+	}
+})
+
+module.exports = StickyExpand
+},{"../actions/CommonActions":163,"react":162}],169:[function(require,module,exports){
 var React = require('react')
 var CommonActions = require('../actions/CommonActions')
 
@@ -19754,6 +19769,9 @@ var StickyNotes = React.createClass({displayName: "StickyNotes",
 					), 
 				React.createElement("div", {className: "clear-sticky-notes", onClick: CommonActions.removeNote.bind(this,{arrComp : this.props.arrComp, index: this.props.indexId})}, 
 					"x"
+				), 
+				React.createElement("div", {className: "expand-sticky-notes"}, 
+					"E"
 				)
 			)
 		)
@@ -19761,7 +19779,7 @@ var StickyNotes = React.createClass({displayName: "StickyNotes",
 })
 
 module.exports = StickyNotes
-},{"../actions/CommonActions":163,"react":162}],169:[function(require,module,exports){
+},{"../actions/CommonActions":163,"react":162}],170:[function(require,module,exports){
 var AppConstants = {
 	ADD_NOTE : "ADD_NOTE",
 	REMOVE_NOTE: "REMOVE_NOTE"
@@ -19769,7 +19787,7 @@ var AppConstants = {
 
 module.exports = AppConstants
 
-},{}],170:[function(require,module,exports){
+},{}],171:[function(require,module,exports){
 var Dispatcher = require('flux').Dispatcher
 var AppDispatcher = new Dispatcher()
 
@@ -19782,7 +19800,7 @@ AppDispatcher.handleAction = function(action) {
 
 module.exports = AppDispatcher
 
-},{"flux":3}],171:[function(require,module,exports){
+},{"flux":3}],172:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
 
@@ -19807,7 +19825,7 @@ ReactDOM.render(
     document.getElementById('app')
 )
 
-},{"./components/StickyApp":166,"react":162,"react-dom":6}],172:[function(require,module,exports){
+},{"./components/StickyApp":166,"react":162,"react-dom":6}],173:[function(require,module,exports){
 var React=require('react');
 var AppDispatcher=require('../dispatchers/AppDispatcher')
 var AppConstants=require('../constants/AppConstants')
@@ -19847,9 +19865,7 @@ var stickyStore = objectAssign({},EventEmitter.prototype,{
 	},
 	removeStickyNote:function(data){
 		if(stickyComponent.length !== 0){
-			console.log(data.index);
 			stickyComponent.splice(data.index,1);
-			console.log(stickyComponent);	
 		}
 		else{
 			alert("Please Add a NOTE");
@@ -19882,4 +19898,4 @@ AppDispatcher.register(function(payload){
 
 module.exports = stickyStore
 
-},{"../actions/CommonActions":163,"../components/StickyNotes":168,"../constants/AppConstants":169,"../dispatchers/AppDispatcher":170,"events":1,"react":162,"react/lib/Object.assign":28}]},{},[171]);
+},{"../actions/CommonActions":163,"../components/StickyNotes":169,"../constants/AppConstants":170,"../dispatchers/AppDispatcher":171,"events":1,"react":162,"react/lib/Object.assign":28}]},{},[172]);

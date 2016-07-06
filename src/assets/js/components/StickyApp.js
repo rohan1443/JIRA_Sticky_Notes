@@ -3,6 +3,7 @@ var Header = require('./Header')
 var AddButton = require('./AddButton')
 var StickyContainer = require('./StickyContainer')
 var StickyStore =  require('../stores/stickyStore')
+var StickyExpand = require('./StickyExpand')
 
 function getStateData(){
 	return {
@@ -32,7 +33,7 @@ var StickyApp = React.createClass({
     	<div className="">
 	        <Header />
           <AddButton />
-          <StickyContainer stickyComponent={this.state.stickyComponent}/>
+          <StickyContainer stickyComponent={this.state.stickyComponent} />
       </div>
     )
   }

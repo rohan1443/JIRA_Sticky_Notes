@@ -37,9 +37,7 @@ var stickyStore = objectAssign({},EventEmitter.prototype,{
 	},
 	removeStickyNote:function(data){
 		if(stickyComponent.length !== 0){
-			console.log(data.index);
 			stickyComponent.splice(data.index,1);
-			console.log(stickyComponent);	
 		}
 		else{
 			alert("Please Add a NOTE");
